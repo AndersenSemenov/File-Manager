@@ -53,6 +53,8 @@ namespace File_Manager
             this.textBox4 = new System.Windows.Forms.TextBox();
             this.LogOutButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
+            this.Books = new System.Windows.Forms.Button();
+            this.FilesButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listView1
@@ -71,6 +73,7 @@ namespace File_Manager
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
             this.listView1.Enter += new System.EventHandler(this.listView1_Enter);
             this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
             // 
@@ -117,6 +120,7 @@ namespace File_Manager
             this.listView2.TabIndex = 2;
             this.listView2.UseCompatibleStateImageBehavior = false;
             this.listView2.View = System.Windows.Forms.View.Details;
+            this.listView2.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView2_ColumnClick);
             this.listView2.Enter += new System.EventHandler(this.listView2_Enter);
             this.listView2.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView2_MouseDoubleClick);
             // 
@@ -275,11 +279,35 @@ namespace File_Manager
             this.SettingsButton.UseVisualStyleBackColor = true;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
             // 
+            // Books
+            // 
+            this.Books.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.Books.Location = new System.Drawing.Point(12, 899);
+            this.Books.Name = "Books";
+            this.Books.Size = new System.Drawing.Size(130, 70);
+            this.Books.TabIndex = 18;
+            this.Books.Text = "Books";
+            this.Books.UseVisualStyleBackColor = true;
+            this.Books.Click += new System.EventHandler(this.Books_Click);
+            // 
+            // FilesButton
+            // 
+            this.FilesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.FilesButton.Location = new System.Drawing.Point(197, 899);
+            this.FilesButton.Name = "FilesButton";
+            this.FilesButton.Size = new System.Drawing.Size(130, 70);
+            this.FilesButton.TabIndex = 19;
+            this.FilesButton.Text = "Files";
+            this.FilesButton.UseVisualStyleBackColor = true;
+            this.FilesButton.Click += new System.EventHandler(this.FilesButton_Click);
+            // 
             // FileManager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 1055);
+            this.Controls.Add(this.FilesButton);
+            this.Controls.Add(this.Books);
             this.Controls.Add(this.SettingsButton);
             this.Controls.Add(this.LogOutButton);
             this.Controls.Add(this.textBox4);
@@ -330,6 +358,8 @@ namespace File_Manager
         public System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button LogOutButton;
         private System.Windows.Forms.Button SettingsButton;
+        private System.Windows.Forms.Button Books;
+        private System.Windows.Forms.Button FilesButton;
     }
 }
 

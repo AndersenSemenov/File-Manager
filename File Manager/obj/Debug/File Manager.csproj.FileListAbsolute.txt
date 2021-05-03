@@ -1,0 +1,18 @@
+D:\С#\File-manager\File-manager\File Manager\bin\Debug\File Manager.exe.config
+D:\С#\File-manager\File-manager\File Manager\bin\Debug\File Manager.exe
+D:\С#\File-manager\File-manager\File Manager\bin\Debug\File Manager.pdb
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File Manager.csprojAssemblyReference.cache
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File_Manager.Create.resources
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File_Manager.FileManager.resources
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File_Manager.RenameForm.resources
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File_Manager.LoginForm.resources
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File_Manager.Properties.Resources.resources
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File_Manager.SettingsForm.resources
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File Manager.csproj.GenerateResource.cache
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File Manager.csproj.CoreCompileInputs.cache
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File Manager.exe
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File Manager.pdb
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File Manager.csproj.CopyComplete
+D:\С#\File-manager\File-manager\File Manager\obj\Debug\File_Manager.BookSearcher.resources
+D:\С#\File-manager\File-manager\File Manager\bin\Debug\WebDriver.dll
+D:\С#\File-manager\File-manager\File Manager\bin\Debug\WebDriver.xml

@@ -14,6 +14,7 @@ using ListViewItem = System.Windows.Forms.ListViewItem;
 using TextBox = System.Windows.Forms.TextBox;
 using System.Diagnostics;
 using System.IO.Compression;
+using System.Collections;
 
 namespace File_Manager
 {
@@ -21,6 +22,9 @@ namespace File_Manager
     {
         static bool flag = true;
         public User user = null;
+        private bool IsFile = true;
+        private ListViewColumnSorter lvwColumnSorter;
+        private DataComparer dc;
 
         public FileManager()
         {
@@ -33,14 +37,18 @@ namespace File_Manager
                     listView2.Items.Add(drive.Name);
                 }
             }
-            ReDraw();
+            DrawFiles();
         }
 
         private void openDirectory(string name, ListView listView)
         {
             if (name != "")
             {
-                listView.Items.Add("...");
+                ListViewItem first = new ListViewItem("...");
+                first.SubItems.Add("");
+                first.SubItems.Add("");
+                first.SubItems.Add("");
+                listView.Items.Add(first);
                 DirectoryInfo di = new DirectoryInfo(name);
                 foreach (var directory in di.GetDirectories())
                 {
@@ -94,28 +102,37 @@ namespace File_Manager
 
         private void MyDoubleClick(ListView listView, TextBox textBox)
         {
-            if (listView.SelectedItems[0].Text == "...")
+            if (IsFile)
             {
-                textBox.Text = ShortCutPath(textBox.Text);
-                listView.Items.Clear(); 
-                openDirectory(textBox.Text, listView);
+                if (listView.SelectedItems[0].Text == "...")
+                {
+                    textBox.Text = ShortCutPath(textBox.Text);
+                    listView.Items.Clear();
+                    openDirectory(textBox.Text, listView);
+                }
+                else
+                {
+                    string fullPath = Path.Combine(textBox.Text, listView.SelectedItems[0].Text);
+                    if (File.Exists(fullPath))
+                    {
+                        Process.Start(fullPath);
+                    }
+                    else if (Directory.Exists(fullPath))
+                    {
+                        listView.Items.Clear();
+                        textBox.Text = fullPath;
+                        openDirectory(textBox.Text, listView);
+                    }
+                }
+                DrawFiles();
             }
             else
             {
-                string fullPath = Path.Combine(textBox.Text, listView.SelectedItems[0].Text);
-                if (File.Exists(fullPath))
-                {
-                    Process.Start(fullPath);
-                }
-                else if (Directory.Exists(fullPath))
-                {
-                    listView.Items.Clear();
-                    textBox.Text = fullPath;
-                    openDirectory(textBox.Text, listView);
-                }
+                string href = listView.SelectedItems[0].Tag.ToString();
+                Process.Start(href);
             }
-            ReDraw();
         }
+
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             MyDoubleClick(listView1, textBox1);
@@ -145,7 +162,7 @@ namespace File_Manager
                     File.Delete(fullPath);
                     MessageBox.Show($"File {currentList.SelectedItems[0].Text} was successfuly deleted");
                 }
-                ReDraw();
+                DrawFiles();
             }
             else
             {
@@ -174,7 +191,7 @@ namespace File_Manager
                     File.Move(currentPath, Path.Combine(currentBox.Text, newName) + CurrentExtension);
                     MessageBox.Show($"File {currentList.SelectedItems[0].Text} was successfuly renamed to {newName + CurrentExtension}");
                 }
-                ReDraw();
+                DrawFiles();
             }
             else
             {
@@ -192,12 +209,29 @@ namespace File_Manager
             flag = false;
         }
 
-        private void ReDraw()
+
+        private void DrawFiles()
         {
+            lvwColumnSorter = new ListViewColumnSorter();
+            this.listView1.ListViewItemSorter = lvwColumnSorter;
+            this.listView2.ListViewItemSorter = lvwColumnSorter;
+
             listView1.Items.Clear();
+            listView1.Columns.Clear();
+            listView1.Columns.Add("Name", 380);
+            listView1.Columns.Add("Extension", 150);
+            listView1.Columns.Add("Size");
+            listView1.Columns.Add("Last Change", 180);
             openDirectory(textBox1.Text, listView1);
+
             listView2.Items.Clear();
+            listView2.Columns.Clear();
+            listView2.Columns.Add("Name", 380);
+            listView2.Columns.Add("Extension", 150);
+            listView2.Columns.Add("Size");
+            listView2.Columns.Add("Last Change", 180);
             openDirectory(textBox2.Text, listView2);
+
             if (user != null)
             {
                 this.SettingsButton.Visible = true;
@@ -223,6 +257,37 @@ namespace File_Manager
             }
         }
 
+        private void DrawBooks(List<Book> books)
+        { 
+
+            listView1.Items.Clear();
+            listView2.Items.Clear();
+            listView1.Columns.Clear();
+            listView1.Columns.Add("Name", 350);
+            listView1.Columns.Add("Cost");
+            listView1.Columns.Add("Author", 180);
+            listView1.Columns.Add("Pages");
+            listView1.Columns.Add("Date", 85);
+
+            listView2.Columns.Clear();
+            listView2.Columns.Add("Name", 350);
+            listView2.Columns.Add("Cost");
+            listView2.Columns.Add("Author", 180);
+            listView2.Columns.Add("Pages");
+            listView2.Columns.Add("Date", 85);
+
+            foreach (var book in books)
+            {
+                ListViewItem item1 = new ListViewItem(book.Name);
+                item1.SubItems.Add(book.Cost);
+                item1.SubItems.Add(book.Author);
+                item1.SubItems.Add(book.Pages);
+                item1.SubItems.Add(book.Date);
+                item1.Tag = book.Reference;
+                listView1.Items.Add(item1);
+                listView2.Items.Add(item1.Clone() as ListViewItem);
+            }
+        }
 
         private void ChangeFontSize(float size1, float size2)
         {
@@ -259,7 +324,7 @@ namespace File_Manager
                 {
                     MessageBox.Show("Choose a directory to archive!");
                 }
-                ReDraw();
+                DrawFiles();
             }
             else
             {
@@ -288,7 +353,7 @@ namespace File_Manager
                     File.Copy(currentPath, Path.Combine(boxTo.Text, currentList.SelectedItems[0].Text), true);
                     MessageBox.Show($"File {currentList.SelectedItems[0].Text} was successfuly copied to {boxTo.Text}");
                 }
-                ReDraw();
+                DrawFiles();
             }
             else
             {
@@ -315,7 +380,7 @@ namespace File_Manager
                     File.Move(currentPath, Path.Combine(boxTo.Text, currentList.SelectedItems[0].Text));
                     MessageBox.Show($"File {currentList.SelectedItems[0].Text} was successfuly moved to {boxTo.Text}");
                 }
-                ReDraw();
+                DrawFiles();
             }
             else
             {
@@ -339,7 +404,7 @@ namespace File_Manager
             {
                 File.Create(Path.Combine(currentBox.Text, createForm.currentText) + createForm.Extension);
             }
-            ReDraw();
+            DrawFiles();
         }
 
         private void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
@@ -351,7 +416,7 @@ namespace File_Manager
                     "Source directory does not exist or could not be found: "
                     + sourceDirName);
             }
-            DirectoryInfo[] dirs = dir.GetDirectories();       
+            DirectoryInfo[] dirs = dir.GetDirectories();
             Directory.CreateDirectory(destDirName);
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
@@ -377,7 +442,7 @@ namespace File_Manager
             form3.button1.Text = "Sign up!";
             form3.ShowDialog();
             user = form3.currentUser;
-            ReDraw();
+            DrawFiles();
         }
 
         private void SignInButton_Click(object sender, EventArgs e)
@@ -387,13 +452,13 @@ namespace File_Manager
             form3.button1.Text = "Sign in!";
             form3.ShowDialog();
             user = form3.currentUser;
-            ReDraw();
+            DrawFiles();
         }
 
         private void LogOutButton_Click(object sender, EventArgs e)
         {
             user = null;
-            ReDraw();
+            DrawFiles();
             MessageBox.Show("You have successfully logged out");
         }
 
@@ -410,7 +475,7 @@ namespace File_Manager
                     forUser.Password = settingsForm.Password != "" ? settingsForm.Password : forUser.Password;
                     forUser.AppName = settingsForm.AppName != "" ? settingsForm.AppName : forUser.AppName;
                     forUser.FontSize = settingsForm.FontSize != 0 ? settingsForm.FontSize : forUser.FontSize;
-                    forUser.FontSizeButton = settingsForm.FontSizeButton != 0? settingsForm.FontSizeButton : forUser.FontSizeButton;
+                    forUser.FontSizeButton = settingsForm.FontSizeButton != 0 ? settingsForm.FontSizeButton : forUser.FontSizeButton;
                 }
             }
             users = Serialization.Refresh(users);
@@ -420,7 +485,53 @@ namespace File_Manager
             user.AppName = settingsForm.AppName != "" ? settingsForm.AppName : user.AppName;
             user.FontSize = settingsForm.FontSize != 0 ? settingsForm.FontSize : user.FontSize;
             user.FontSizeButton = settingsForm.FontSizeButton != 0 ? settingsForm.FontSizeButton : user.FontSizeButton;
-            ReDraw();
+            DrawFiles();
         }
-    }
+
+        private void Books_Click(object sender, EventArgs e)
+        {
+            lvwColumnSorter = new ListViewColumnSorter();
+            this.listView1.ListViewItemSorter = lvwColumnSorter;
+            this.listView2.ListViewItemSorter = lvwColumnSorter;
+            dc = new DataComparer(SortOrder.None);
+            IsFile = false;
+            BookSearcher bookSearcher = new BookSearcher();
+            bookSearcher.ShowDialog();
+            List<Book> books = Parser.Parse(bookSearcher.BookName, bookSearcher.Count);
+            DrawBooks(books);
+        }
+
+        private void FilesButton_Click(object sender, EventArgs e)
+        {
+            IsFile = true;
+            DrawFiles();
+        }
+
+        private void listView1_ColumnClick(object o, ColumnClickEventArgs e)
+        {
+            ColumnSort(listView1, e);
+        }
+
+        private void listView2_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            ColumnSort(listView2, e);
+        }
+
+        private void ColumnSort(ListView lv, ColumnClickEventArgs e)
+        {
+
+            lvwColumnSorter.SortColumn = e.Column;
+            if (e.Column == 4 && !IsFile)
+            {
+                dc.Order = dc.Order == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+                lv.ListViewItemSorter = new DataComparer(dc.Order);
+            }
+            else
+            {
+                lvwColumnSorter.Order = lvwColumnSorter.Order == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+                lv.ListViewItemSorter = lvwColumnSorter;
+                lv.Sort();
+            }
+        }
+    }         
 }
