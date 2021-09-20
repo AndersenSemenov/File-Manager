@@ -422,5 +422,10 @@ namespace File_Manager
             user.FontSizeButton = settingsForm.FontSizeButton != 0 ? settingsForm.FontSizeButton : user.FontSizeButton;
             ReDraw();
         }
+
+        private void FileManager_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

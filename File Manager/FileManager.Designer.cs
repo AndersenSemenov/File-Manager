@@ -299,6 +299,7 @@ namespace File_Manager
             this.Name = "FileManager";
             this.Text = "File Manager";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.Load += new System.EventHandler(this.FileManager_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
